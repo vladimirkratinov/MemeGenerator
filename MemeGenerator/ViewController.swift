@@ -21,7 +21,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func loadView() {
         view = UIView()
         view.sizeToFit()
-        view.backgroundColor = UIColor(red: 0.00, green: 0.42, blue: 0.46, alpha: 1.00)
+        view.backgroundColor = UIColor(red: 0.00, green: 0.42, blue: 0.40, alpha: 1.00)
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addTopTextButton.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +62,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            imageView.widthAnchor.constraint(equalToConstant: 512),
+//            imageView.heightAnchor.constraint(equalToConstant: 512),
             
             addTopTextButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             addTopTextButton.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
@@ -73,7 +75,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             addBottomTextButton.heightAnchor.constraint(equalToConstant: 30),
             addBottomTextButton.widthAnchor.constraint(equalToConstant: 160),
         ])
-        
     }
         
     override func viewDidLoad() {
@@ -85,13 +86,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         navigationItem.rightBarButtonItem?.tintColor = .black
         
         navigationController?.isToolbarHidden = true
-        
-//        drawCircle()
-
     }
 
     func drawCircle() {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 400, height: 400))
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
 
         let img = renderer.image { ctx in
             let rectangle = CGRect(x: 0, y: 0, width: 400, height: 400).insetBy(dx: 5, dy: 5)
@@ -114,6 +112,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             
             let importedImage = images.first
             importedImage?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+
+            let attrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont(name: "DINCondensed-Bold", size: 60)!,
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: paragraphStyle
+            ]
+            
+            //addTopText
+            let attributedTopString = NSAttributedString(string: topText ?? "", attributes: attrs)
+            attributedTopString.draw(
+                with: CGRect(x: 32, y: 10, width: 448, height: 448),
+                options: .usesLineFragmentOrigin,
+                context: nil)
+            
+            //addBottomText
+            let attributedBottomString = NSAttributedString(string: bottomText ?? "", attributes: attrs)
+            attributedBottomString.draw(
+                with: CGRect(x: 32, y: 450, width: 448, height: 448),
+                options: .usesLineFragmentOrigin,
+                context: nil)
+            
+            importedImage?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
         }
         
         imageView.image = image
@@ -132,10 +155,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         images.insert(image, at: 0)
         drawImage()
-    }
-    
-    @objc func sharePicture() {
-        
+        print(imageView.layer.position)
     }
     
     @objc func addTopTextButtonTapped() {
@@ -143,7 +163,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let ac = UIAlertController(title: "Print Text:", message: nil, preferredStyle: .alert)
         
         ac.addTextField { field in
-            field.placeholder = "type your text..."
+            field.placeholder = "type here..."
             field.returnKeyType = .done
             field.keyboardType = .default
         }
@@ -156,8 +176,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             guard let answer = textInField.text else { return }
             
             self.topText = answer
-            
-            self.submitTopText(input: answer)
+            self.drawImage()
         }))
         
         present(ac, animated: true)
@@ -168,7 +187,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let ac = UIAlertController(title: "Print Text:", message: nil, preferredStyle: .alert)
         
         ac.addTextField { field in
-            field.placeholder = "type your text..."
+            field.placeholder = "type here..."
             field.returnKeyType = .done
             field.keyboardType = .default
         }
@@ -181,77 +200,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             guard let answer = textInField.text else { return }
             
             self.bottomText = answer
-            
-            self.submitBottomText(input: answer)
+            self.drawImage()
         }))
         
         present(ac, animated: true)
-        
     }
     
-    //MARK: - submitTopText
-    
-    func submitTopText(input: String) {
-
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
-
-        //context
-        let image = renderer.image { ctx in
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-
-            let attrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: "DINCondensed-Bold", size: 60)!,
-                .foregroundColor: UIColor.white,
-                .paragraphStyle: paragraphStyle
-            ]
-
-            let attributedString = NSAttributedString(string: input, attributes: attrs)
-            attributedString.draw(
-                with: CGRect(x: 32, y: 10, width: 448, height: 448),
-                options: .usesLineFragmentOrigin,
-                context: nil)
-
-            let imageInput = images.last
-            imageInput?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
-        }
+    @objc func sharePicture() {
+        guard let image = imageView.image else { return }
+ 
+        let ac = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         
-        images.insert(image, at: 0)
-        imageView.image = image
-        print(images.count)
-    }
-    
-    //MARK: - submit bottomText
-    
-    func submitBottomText(input: String) {
+        // exclude some activity types from the list (optional)
+        ac.excludedActivityTypes = [
+            UIActivity.ActivityType.airDrop,
+            UIActivity.ActivityType.postToFacebook
+        ]
         
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
-        
-        //context
-        let image = renderer.image { ctx in
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.alignment = .center
-            
-            let attrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: "DINCondensed-Bold", size: 60)!,
-                .foregroundColor: UIColor.white,
-                .paragraphStyle: paragraphStyle
-            ]
-            
-            let attributedString = NSAttributedString(string: input, attributes: attrs)
-            attributedString.draw(
-                with: CGRect(x: 32, y: 450, width: 448, height: 448),
-                options: .usesLineFragmentOrigin,
-                context: nil)
-            
-            
-            let imageInput = images.first
-            imageInput?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
-        }
-        
-        images.insert(image, at: 0)
-        imageView.image = image
-        print(images.count)
+        present(ac, animated: true)
     }
     
 }

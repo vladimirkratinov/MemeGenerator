@@ -15,18 +15,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var topText: String?
     var bottomText: String?
 
-    let imageView = UIImageView()
+    var backgroundImage = UIImageView()
+    var imageView = UIImageView()
     var images = [UIImage]()
     
     override func loadView() {
         view = UIView()
         view.sizeToFit()
-        view.backgroundColor = UIColor(red: 0.00, green: 0.42, blue: 0.40, alpha: 1.00)
         
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame.size.width = 200
-        imageView.frame.size.height = 200
-        imageView.center = view.center
+        backgroundImage = UIImageView(frame: UIScreen.main.bounds)
+        backgroundImage.image = UIImage(named: "background2")
+        backgroundImage.contentMode =  .scaleAspectFill
+        backgroundImage.applyBlurEffect()
+        view.insertSubview(backgroundImage, at: 0)
+        
+        imageView.alpha = 0.3
+        imageView.contentMode = .scaleToFill
+        imageView.clipsToBounds = true
+        imageView.image = UIImage(named: "600x600")
+        images.insert(UIImage(named: "600x600")!, at: 0)
                 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addTopTextButton.translatesAutoresizingMaskIntoConstraints = false
@@ -35,8 +42,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         view.addSubview(imageView)
         
         addTopTextButton.setTitle("Add Top Text", for: .normal)
-        addTopTextButton.titleLabel?.font = UIFont(name: "Inter", size: 30)
-        addTopTextButton.layer.cornerRadius = 10
+        addTopTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
+        addTopTextButton.layer.cornerRadius = 2
         addTopTextButton.layer.shadowColor = UIColor.black.cgColor
         addTopTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
         addTopTextButton.layer.shadowRadius = 1
@@ -50,8 +57,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         view.addSubview(addTopTextButton)
         
         addBottomTextButton.setTitle("Add Bottom Text", for: .normal)
-        addBottomTextButton.titleLabel?.font = UIFont(name: "Inter", size: 30)
-        addBottomTextButton.layer.cornerRadius = 10
+        addBottomTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
+        addBottomTextButton.layer.cornerRadius = 2
         addBottomTextButton.layer.shadowColor = UIColor.black.cgColor
         addBottomTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
         addBottomTextButton.layer.shadowRadius = 1
@@ -67,18 +74,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-//            imageView.widthAnchor.constraint(equalToConstant: 512),
-//            imageView.heightAnchor.constraint(equalToConstant: 512),
+            imageView.widthAnchor.constraint(equalToConstant: 512),
+            imageView.heightAnchor.constraint(equalToConstant: 512),
             
             addTopTextButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             addTopTextButton.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             addTopTextButton.heightAnchor.constraint(equalToConstant: 30),
-            addTopTextButton.widthAnchor.constraint(equalToConstant: 160),
+            addTopTextButton.widthAnchor.constraint(equalToConstant: 170),
             
             addBottomTextButton.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -180),
             addBottomTextButton.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
             addBottomTextButton.heightAnchor.constraint(equalToConstant: 30),
-            addBottomTextButton.widthAnchor.constraint(equalToConstant: 160),
+            addBottomTextButton.widthAnchor.constraint(equalToConstant: 170),
         ])
     }
         
@@ -87,6 +94,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importPicture))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(sharePicture))
+        
         navigationItem.leftBarButtonItem?.tintColor = .black
         navigationItem.rightBarButtonItem?.tintColor = .black
         
@@ -112,11 +120,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func drawImage() {
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
         
-        //context
-        let image = renderer.image { ctx in
+        let image = renderer.image { _ in
             
             let importedImage = images.first
-            importedImage?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
+            importedImage?.draw(in: CGRect(x: 0, y: 0, width: 512, height: 512))
             
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
@@ -132,7 +139,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             //addTopText
             let attributedTopString = NSAttributedString(string: topText ?? "", attributes: attrs)
             attributedTopString.draw(
-                with: CGRect(x: 32, y: 10, width: 448, height: 448),
+                with: CGRect(x: 32, y: -5, width: 448, height: 448),
                 options: .usesLineFragmentOrigin,
                 context: nil)
             
@@ -142,10 +149,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 with: CGRect(x: 32, y: 440, width: 448, height: 448),
                 options: .usesLineFragmentOrigin,
                 context: nil)
-            
-            importedImage?.draw(at: CGPoint(x: 0, y: 0), blendMode: .overlay, alpha: 1)
         }
         
+        imageView.alpha = 1
         imageView.image = image
     }
     
@@ -215,19 +221,29 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func sharePicture() {
-        guard let image = imageView.image else { return }
+        guard let image = imageView.image?.jpegData(compressionQuality: 0.8) else { return }
+        let itemsList: [Any] = [image]
  
-        let ac = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        let ac = UIActivityViewController(activityItems: itemsList, applicationActivities: nil)
         ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         
         // exclude some activity types from the list (optional)
-        ac.excludedActivityTypes = [
-            UIActivity.ActivityType.airDrop,
-            UIActivity.ActivityType.postToFacebook
-        ]
+//        ac.excludedActivityTypes = [
+//            UIActivity.ActivityType.airDrop,
+//            UIActivity.ActivityType.postToFacebook
+//        ]
         
         present(ac, animated: true)
     }
-    
+}
+
+extension UIImageView {
+    func applyBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(blurEffectView)
+    }
 }
 

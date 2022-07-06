@@ -14,6 +14,7 @@
 		F75EEB28287257B4009141B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F75EEB27287257B4009141B5 /* Assets.xcassets */; };
 		F75EEB2B287257B4009141B5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F75EEB29287257B4009141B5 /* LaunchScreen.storyboard */; };
 		F75EEB332873B64B009141B5 /* CustomButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75EEB322873B64B009141B5 /* CustomButtons.swift */; };
+		F7C551CB28763B2F001A8EDC /* DetailUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C551CA28763B2F001A8EDC /* DetailUIView.swift */; };
 		F7C82EF32876138A0093B8AF /* impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7C82EF22876138A0093B8AF /* impact.ttf */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		F75EEB2A287257B4009141B5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F75EEB2C287257B4009141B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F75EEB322873B64B009141B5 /* CustomButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtons.swift; sourceTree = "<group>"; };
+		F7C551CA28763B2F001A8EDC /* DetailUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailUIView.swift; sourceTree = "<group>"; };
 		F7C82EF22876138A0093B8AF /* impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = impact.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,15 +62,16 @@
 		F75EEB1D287257B3009141B5 /* MemeGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				F75EEB1E287257B3009141B5 /* AppDelegate.swift */,
-				F75EEB20287257B3009141B5 /* SceneDelegate.swift */,
 				F75EEB22287257B3009141B5 /* ViewController.swift */,
+				F7C551CA28763B2F001A8EDC /* DetailUIView.swift */,
 				F75EEB322873B64B009141B5 /* CustomButtons.swift */,
 				F75EEB24287257B3009141B5 /* Main.storyboard */,
-				F75EEB27287257B4009141B5 /* Assets.xcassets */,
 				F75EEB29287257B4009141B5 /* LaunchScreen.storyboard */,
+				F75EEB27287257B4009141B5 /* Assets.xcassets */,
 				F75EEB2C287257B4009141B5 /* Info.plist */,
 				F7C82EF22876138A0093B8AF /* impact.ttf */,
+				F75EEB1E287257B3009141B5 /* AppDelegate.swift */,
+				F75EEB20287257B3009141B5 /* SceneDelegate.swift */,
 			);
 			path = MemeGenerator;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F75EEB332873B64B009141B5 /* CustomButtons.swift in Sources */,
+				F7C551CB28763B2F001A8EDC /* DetailUIView.swift in Sources */,
 				F75EEB23287257B3009141B5 /* ViewController.swift in Sources */,
 				F75EEB1F287257B3009141B5 /* AppDelegate.swift in Sources */,
 				F75EEB21287257B3009141B5 /* SceneDelegate.swift in Sources */,

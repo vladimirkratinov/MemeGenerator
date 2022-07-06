@@ -7,7 +7,7 @@
 
 import UIKit
 
-let customColor = UIColor(red: 0.10, green: 0.74, blue: 0.61, alpha: 1.00)
+let customColor = UIColor(red: 0.30, green: 0.54, blue: 0.81, alpha: 1.00)
 
 class HighlightedButtonGreen: UIButton {
     override var isHighlighted: Bool {

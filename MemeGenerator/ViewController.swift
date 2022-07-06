@@ -9,84 +9,33 @@ import UIKit
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    var addTopTextButton = HighlightedButtonGreen(type: .system)
-    var addBottomTextButton = HighlightedButtonGreen(type: .system)
-    
+    var images = [UIImage]()
+    var imageView = UIImageView()
     var topText: String?
     var bottomText: String?
-
-    var backgroundImage = UIImageView()
-    var imageView = UIImageView()
-    var images = [UIImage]()
     
     override func loadView() {
-        view = UIView()
-        view.sizeToFit()
+        let view = DetailUIView()
         
-        backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-        backgroundImage.image = UIImage(named: "background2")
-        backgroundImage.contentMode =  .scaleAspectFill
-        backgroundImage.applyBlurEffect()
-        view.insertSubview(backgroundImage, at: 0)
-        
-        imageView.alpha = 0.3
+        imageView.alpha = 0.1
         imageView.contentMode = .scaleToFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "600x600")
-        images.insert(UIImage(named: "600x600")!, at: 0)
-                
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        addTopTextButton.translatesAutoresizingMaskIntoConstraints = false
-        addBottomTextButton.translatesAutoresizingMaskIntoConstraints = false
+        images.insert(UIImage(named: "600x600")!, at: 0)
+        
+        view.addTopTextButton.addTarget(self, action: #selector(addTopTextButtonTapped), for: .touchUpInside)
+        view.addBottomTextButton.addTarget(self, action: #selector(addBottomTextButtonTapped), for: .touchUpInside)
         
         view.addSubview(imageView)
-        
-        addTopTextButton.setTitle("Add Top Text", for: .normal)
-        addTopTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
-        addTopTextButton.layer.cornerRadius = 2
-        addTopTextButton.layer.shadowColor = UIColor.black.cgColor
-        addTopTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
-        addTopTextButton.layer.shadowRadius = 1
-        addTopTextButton.layer.shadowOpacity = 1.0
-        addTopTextButton.tintColor = UIColor.black
-        addTopTextButton.backgroundColor = customColor
-        addTopTextButton.layer.shouldRasterize = true
-        addTopTextButton.layer.rasterizationScale = UIScreen.main.scale
-        addTopTextButton.tag = 1
-        addTopTextButton.addTarget(self, action: #selector(addTopTextButtonTapped), for: .touchUpInside)
-        view.addSubview(addTopTextButton)
-        
-        addBottomTextButton.setTitle("Add Bottom Text", for: .normal)
-        addBottomTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
-        addBottomTextButton.layer.cornerRadius = 2
-        addBottomTextButton.layer.shadowColor = UIColor.black.cgColor
-        addBottomTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
-        addBottomTextButton.layer.shadowRadius = 1
-        addBottomTextButton.layer.shadowOpacity = 1.0
-        addBottomTextButton.tintColor = UIColor.black
-        addBottomTextButton.backgroundColor = customColor
-        addBottomTextButton.layer.shouldRasterize = true
-        addBottomTextButton.layer.rasterizationScale = UIScreen.main.scale
-        addBottomTextButton.tag = 1
-        addBottomTextButton.addTarget(self, action: #selector(addBottomTextButtonTapped), for: .touchUpInside)
-        view.addSubview(addBottomTextButton)
+        self.view = view
         
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             imageView.widthAnchor.constraint(equalToConstant: 512),
-            imageView.heightAnchor.constraint(equalToConstant: 512),
-            
-            addTopTextButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
-            addTopTextButton.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
-            addTopTextButton.heightAnchor.constraint(equalToConstant: 30),
-            addTopTextButton.widthAnchor.constraint(equalToConstant: 170),
-            
-            addBottomTextButton.topAnchor.constraint(equalTo: view.bottomAnchor, constant: -180),
-            addBottomTextButton.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor),
-            addBottomTextButton.heightAnchor.constraint(equalToConstant: 30),
-            addBottomTextButton.widthAnchor.constraint(equalToConstant: 170),
-        ])
+            imageView.heightAnchor.constraint(equalToConstant: 512)
+            ])
     }
         
     override func viewDidLoad() {
@@ -99,22 +48,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         navigationItem.rightBarButtonItem?.tintColor = .black
         
         navigationController?.isToolbarHidden = true
-    }
-
-    func drawCircle() {
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
-
-        let img = renderer.image { ctx in
-            let rectangle = CGRect(x: 0, y: 0, width: 400, height: 400).insetBy(dx: 5, dy: 5)
-            ctx.cgContext.setFillColor(UIColor.red.cgColor)
-            ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
-            ctx.cgContext.setLineWidth(10)
-
-            ctx.cgContext.addEllipse(in: rectangle)
-            ctx.cgContext.drawPath(using: .fillStroke)
-        }
-
-        imageView.image = img
     }
     
     func drawImage() {
@@ -173,7 +106,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func addTopTextButtonTapped() {
-        
         let ac = UIAlertController(title: "Print Text:", message: nil, preferredStyle: .alert)
         
         ac.addTextField { field in
@@ -197,7 +129,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func addBottomTextButtonTapped() {
-        
         let ac = UIAlertController(title: "Print Text:", message: nil, preferredStyle: .alert)
         
         ac.addTextField { field in
@@ -227,12 +158,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let ac = UIActivityViewController(activityItems: itemsList, applicationActivities: nil)
         ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         
-        // exclude some activity types from the list (optional)
-//        ac.excludedActivityTypes = [
-//            UIActivity.ActivityType.airDrop,
-//            UIActivity.ActivityType.postToFacebook
-//        ]
-        
         present(ac, animated: true)
     }
 }
@@ -246,4 +171,3 @@ extension UIImageView {
         addSubview(blurEffectView)
     }
 }
-

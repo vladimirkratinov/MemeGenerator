@@ -23,6 +23,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         view.sizeToFit()
         view.backgroundColor = UIColor(red: 0.00, green: 0.42, blue: 0.40, alpha: 1.00)
         
+        imageView.contentMode = .scaleAspectFit
+        imageView.frame.size.width = 200
+        imageView.frame.size.height = 200
+        imageView.center = view.center
+                
         imageView.translatesAutoresizingMaskIntoConstraints = false
         addTopTextButton.translatesAutoresizingMaskIntoConstraints = false
         addBottomTextButton.translatesAutoresizingMaskIntoConstraints = false
@@ -117,8 +122,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             paragraphStyle.alignment = .center
 
             let attrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: "DINCondensed-Bold", size: 60)!,
+                .font: UIFont(name: "impact", size: 60)!,
                 .foregroundColor: UIColor.white,
+                .strokeColor: UIColor.black,
+                .strokeWidth: -4,
                 .paragraphStyle: paragraphStyle
             ]
             
@@ -132,7 +139,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             //addBottomText
             let attributedBottomString = NSAttributedString(string: bottomText ?? "", attributes: attrs)
             attributedBottomString.draw(
-                with: CGRect(x: 32, y: 450, width: 448, height: 448),
+                with: CGRect(x: 32, y: 440, width: 448, height: 448),
                 options: .usesLineFragmentOrigin,
                 context: nil)
             
@@ -153,9 +160,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         guard let image = info[.editedImage] as? UIImage else { return }
         dismiss(animated: true)
         
+        images.removeAll()
         images.insert(image, at: 0)
+        print(image.size)
         drawImage()
-        print(imageView.layer.position)
     }
     
     @objc func addTopTextButtonTapped() {

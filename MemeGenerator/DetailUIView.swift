@@ -25,19 +25,19 @@ class DetailUIView: UIView {
         createConstraints()
     }
     
-    func createSubviews() {
+    func createSubviews() {        
         addTopTextButton.translatesAutoresizingMaskIntoConstraints = false
         addBottomTextButton.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundImage = UIImageView(frame: UIScreen.main.bounds)
-        backgroundImage.image = UIImage(named: "background2")
+        backgroundImage.image = UIImage(named: "background7")
         backgroundImage.contentMode =  .scaleAspectFill
         backgroundImage.applyBlurEffect()
         
         self.insertSubview(backgroundImage, at: 0)
         
         addTopTextButton.setTitle("Add Top Text", for: .normal)
-        addTopTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
+        addTopTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 14)
         addTopTextButton.layer.cornerRadius = 2
         addTopTextButton.layer.shadowColor = UIColor.black.cgColor
         addTopTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
@@ -52,7 +52,7 @@ class DetailUIView: UIView {
         self.addSubview(addTopTextButton)
         
         addBottomTextButton.setTitle("Add Bottom Text", for: .normal)
-        addBottomTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 20)
+        addBottomTextButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 14)
         addBottomTextButton.layer.cornerRadius = 2
         addBottomTextButton.layer.shadowColor = UIColor.black.cgColor
         addBottomTextButton.layer.shadowOffset = CGSize(width: 2, height: 2)
@@ -79,5 +79,15 @@ class DetailUIView: UIView {
             addBottomTextButton.heightAnchor.constraint(equalToConstant: 30),
             addBottomTextButton.widthAnchor.constraint(equalToConstant: 170),
         ])
+    }
+}
+
+extension UIImageView {
+    func applyBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(blurEffectView)
     }
 }

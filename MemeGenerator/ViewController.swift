@@ -17,7 +17,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func loadView() {
         let view = DetailUIView()
         
-        imageView.alpha = 0.1
+        imageView.alpha = 0
         imageView.contentMode = .scaleToFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "600x600")
@@ -41,6 +41,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //clear navigationBar color & shadow
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .clear
+        appearance.shadowColor = .clear
+        navigationController?.navigationBar.standardAppearance = appearance;
+        navigationController?.navigationBar.scrollEdgeAppearance = navigationController?.navigationBar.standardAppearance
+        
+        title = "MemeGenerator v0.1"
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importPicture))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(sharePicture))
         
@@ -48,6 +58,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         navigationItem.rightBarButtonItem?.tintColor = .black
         
         navigationController?.isToolbarHidden = true
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.barTintColor = .purple
+        
+        //animation of imageView
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 3) {
+                self.imageView.alpha = 0.1
+                }
+        }
+        
     }
     
     func drawImage() {
@@ -62,7 +82,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             paragraphStyle.alignment = .center
 
             let attrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont(name: "impact", size: 60)!,
+                .font: UIFont(name: "impact", size: 55)!,
                 .foregroundColor: UIColor.white,
                 .strokeColor: UIColor.black,
                 .strokeWidth: -4,
@@ -101,7 +121,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         images.removeAll()
         images.insert(image, at: 0)
-        print(image.size)
+        topText = ""
+        bottomText = ""
         drawImage()
     }
     
@@ -159,15 +180,5 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         
         present(ac, animated: true)
-    }
-}
-
-extension UIImageView {
-    func applyBlurEffect() {
-        let blurEffect = UIBlurEffect(style: .light)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        addSubview(blurEffectView)
     }
 }

@@ -4,7 +4,7 @@ challenge app for iPhone:
 * Add Custom Text,
 * Save your new meme!
 
-# What I Learned: 👨‍
+# What I Learned: 👨‍💻
 * Work with Core Graphics
 * UIGraphicsImageRenderer
 * UIGraphicsImageRendererContext
